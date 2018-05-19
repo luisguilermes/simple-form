@@ -4,14 +4,14 @@ services:
   proxy:
     build: ./proxy
     links:
-      - maxmilhasapp
+      - simpleformapp
     ports:
       - "80:80"
     environment:
       - NGINX_HOST=192.168.1.15
-      - NGINX_PROXY=http://maxmilhasapp:9090
+      - NGINX_PROXY=http://simpleformapp:9090
 
-  maxmilhasapp:
+  simpleformapp:
     build: ./app
     environment:
       ENV: PROD
