@@ -6,3 +6,4 @@ app.config['SECRET_KEY'] = 'random'
 app.debug = True
 
 from .controllers import api_controller
+

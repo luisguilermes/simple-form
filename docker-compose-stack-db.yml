@@ -1,0 +1,91 @@
+version: "3"
+
+services:
+
+  mongo1:
+    image: mongo:3.4
+    networks:
+      - mongo
+    volumes:
+      - mongodata1:/data/db
+      - mongoconfig1:/data/configdb
+    command: mongod --replSet simpleformrs --smallfiles --port 27017
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mongo.replica == 1
+
+  mongo2:
+    image: mongo:3.4
+    networks:
+      - mongo
+    volumes:
+      - mongodata2:/data/db
+      - mongoconfig2:/data/configdb
+    command: mongod --replSet simpleformrs --smallfiles --port 27017
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mongo.replica == 2
+
+  mongo3:
+    image: mongo:3.4
+    networks:
+      - mongo
+    volumes:
+      - mongodata3:/data/db
+      - mongoconfig3:/data/configdb
+    command: mongod --replSet simpleformrs --smallfiles --port 27017
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mongo.replica == 3
+  proxy:
+    image: luisguilermes/simpleform_proxy
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+      - backend
+    environment:
+      - NGINX_HOST=proxy
+      - NGINX_PROXY=http://app:9090
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  app:
+    image: luisguilermes/simpleform_app
+    environment:
+      - ENV=PROD
+      - MONGO1=mongo1
+      - MONGO2=mongo2
+      - MONGO3=mongo3
+    networks:
+      - backend
+      - mongo
+
+networks:
+  mongo:
+  frontend:
+  backend:
+
+volumes:
+  mongodata1:
+  mongoconfig1:
+  mongodata2:
+  mongoconfig2:
+  mongodata3:
+  mongoconfig3:
+
+

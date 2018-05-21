@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Form</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-theme.css">
+</head>
+<body class="container">
+
+    <h1 class="text-center">Simple Form</h1>
+    <div id="mensagemView">
+    </div>
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <form class="form" id="postData" >
+
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" placeholder="Entre com o nome" id="nome" class="form-control" autofocus/>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" class="form-control" placeholder="exemplo@exemplo.com" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="sugestao">Sugestão</label>
+                <textarea id="sugestao" class="form-control" rows="6"/></textarea>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Enviar</button>
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
+    <script>
+        document.getElementById('postData').addEventListener('submit', postData);
+
+
+        function postData(event){
+            event.preventDefault();
+
+            let nome = document.getElementById('nome').value;
+            let email = document.getElementById('email').value;
+            let sugestao = document.getElementById('sugestao').value;
+            let mensagem = document.getElementById('mensagemView');
+
+            fetch('/api/v1/sugestoes', {
+                method: 'POST',
+                headers : new Headers(),
+                body:JSON.stringify({nome:nome, email:email, sugestao: sugestao})
+            }).then((res) => res.json())
+            .then((data) =>  {
+                data.error ? mensagem.innerHTML = `<p class="alert alert-warning text-center">Sugestão já enviada por esse Email.</p>` : mensagem.innerHTML = `<p class="alert alert-info text-center">Sugestão enviada com sucesso.</p>`;
+                console.log(data);
+                document.getElementById('nome').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('sugestao').value = '';
+            })
+            .catch((err)=>{
+                mensagem.innerHTML = `<p class="alert alert-danger text-center">Sugestão não foi enviada.</p>`;
+                console.log(err);
+                document.getElementById('nome').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('sugestao').value = '';
+            })
+
+
+        }
+    </script>
+</body>
+</html>
