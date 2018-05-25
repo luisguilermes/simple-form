@@ -1,11 +1,11 @@
-#Exemplo de stack devops - Simple Form
+# Exemplo de stack devops - Simple Form
 
-##Dependências do Projeto
+## Dependências do Projeto
 
 - Docker Engine release 17.04.0+
 - Docker Compose 1.10.0+
 
-##Para Iniciar o Projeto
+## Para Iniciar o Projeto
 
 A partir do diretório do projeto, executar:
 
@@ -13,7 +13,7 @@ A partir do diretório do projeto, executar:
 docker-compose -f docker-compose.yml up -d --build
 ```
 
-###Administrando a stack
+### Administrando a stack
 
 Scale da aplicação:
 
@@ -21,26 +21,26 @@ Scale da aplicação:
 docker-compose -f docker-compose.yml scale application=10
 ```
 
-##URLs do Projeto
+## URLs do Projeto
 
 - Form Sugestões: http://<IP-HOST-DOCKER>
 - Backend info: http://<IP-HOST-DOCKER>/api/v1/info
 - Backend lista sugestões: http://<IP-HOST-DOCKER>/api/v1/sugestoes
 - Zabbix: http://<IP-HOST-DOCKER>:8080
 
-##Credenciais de Acesso
+## Credenciais de Acesso
 
 - Zabbix => Usuário: Admin / Senha: zabbix
 - Mongo: sem autenticação
 
 
-##Fluxo de Acesso da aplicação 
+## Fluxo de Acesso da aplicação 
 
 ![alt text](fluxo.png)
 
-##Detalhes Técnicos do Projeto
+## Detalhes Técnicos do Projeto
 
-###Database
+### Database
 
 Cluster MongoDB composto por 3 containers em um cluster baseado em replicaset e 1 container ephemeral para deploy do cluster.
 
@@ -50,7 +50,7 @@ Seguindo a descrição do docker-compose, tem-se:
 - mongo-setup: Conteiner utilizado para realizar o deploy do cluster executando o setup.sh no startup
 
 
-###Application
+### Application
 
 A aplicação foi construída utilizando a linguagem python e o microframework flask.
 
@@ -61,7 +61,7 @@ A aplicação trabalha recebendo os verbos HTTP GET e POST, para a leitura e cad
 O deploy da aplicação foi feito utilizando o WSGI python uWSGI escutando na porta 9090.
 
 
-###Loadbalance
+### Loadbalance
 
 O loadbalance foi construido utilizando o servidor WEB NGINX.
 
@@ -72,7 +72,7 @@ O servidor também é responsável por entregar a "SPA" com o form de cadastro d
 aplicação para realizar o cadastro, onde não é possível cadastrar duas sugestões com o mesmo e-mail.
 
 
-###Zabbix
+### Zabbix
 
 Foi utilizado a imagem disponível no repositório oficial do zabbix para subir o servidor.
 
