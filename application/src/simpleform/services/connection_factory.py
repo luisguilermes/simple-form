@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from pymongo import MongoClient
 
-DB_NAME = 'simpleform_db'
+DB_NAME = 'maxmilhas_db'
 COLLECTION_NAME = 'sugestoes'
-MONGO_URI = "mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=simpleformrs"
+MONGO_URI = "mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=maxmilhasrs"
 
 
 class ConnectionFactory:
@@ -23,13 +23,6 @@ class ConnectionFactory:
             dbnames = self.connection.database_names()
             if DB_NAME not in dbnames:
                 db = self.connection.simpleform_db.sugestoes
-
-                db.insert({
-                    "nome": "teste",
-                    "email": "teste@gmail.com",
-                    "sugestao": "Testes"
-                })
-
                 print("Database Initialize completed!")
             else:
                 print("Database already Initialized!")

@@ -1,0 +1,58 @@
+version: '2'
+
+services:
+
+  mongo1:
+    image: mongo:3.4
+    command: mongod --replSet maxmilhasrs --smallfiles --port 27017
+    ports:
+      - "27017:27017"
+
+  mongo2:
+    image: mongo:3.4
+    command: mongod --replSet maxmilhasrs --smallfiles --port 27017
+    ports:
+      - "27018:27017"
+
+  mongo3:
+    image: mongo:3.4
+    command: mongod --replSet maxmilhasrs --smallfiles --port 27017
+    ports:
+      - "27019:27017"
+
+  mongo-setup:
+    build: database/setup
+    depends_on:
+      - mongo1
+
+  application:
+    build: application
+    environment:
+      - ENV=PROD
+    depends_on:
+      - mongo-setup
+    restart: on-failure
+
+  loadbalance:
+    build: loadbalance
+    depends_on:
+      - application
+    environment:
+      - NGINX_HOST=proxy
+      - NGINX_PROXY=application:9090
+    ports:
+      - "80:80"
+    restart: always
+
+  zabbix:
+    image: zabbix/zabbix-appliance:ubuntu-3.0-latest
+    ports:
+      - "8080:80"
+    environment:
+      - ZBX_SERVER_NAME=Zabbix SimpleForm
+    restart: on-failure
+
+  setup-zabbix:
+    build: zabbix/setup
+    depends_on:
+      - zabbix
